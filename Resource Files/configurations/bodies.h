@@ -17,6 +17,5 @@ struct bodies
   body planets[6];
   unsigned int size;
 };
-struct bodies bodylist;
 
 #endif

@@ -1,12 +1,21 @@
 #include "window.h"
+#include "./configurations/bodies.h"
+#include "parser.h"
 
-int EntryPoint()
+
+int physics_thread()
 {
-  return 0;
+
+    struct bodies bodylist;
+    LoadPlanetData(&bodylist);
+
+    ProcessPhysics(&bodylist);
+
+    return 86; //haha yes
 }
 
 int main()
 {
-  GH_InitWindow(EntryPoint);
+  GH_InitWindow(physics_thread);
   return 0;
 }

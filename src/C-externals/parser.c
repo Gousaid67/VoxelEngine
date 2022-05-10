@@ -1,6 +1,6 @@
 #include "parser.h"
 
-void LoadPlanetData()
+void LoadPlanetData(struct bodies *bodylist)
 {
   body Sol;
   Sol.bID = 1;
@@ -68,13 +68,13 @@ void LoadPlanetData()
                            2.628158890420931E+04f,
                            5.188465740839767E+02f);
 
-  bodylist.size = 6;
-  bodylist.planets[0] = Sol;
-  bodylist.planets[1] = Mercury;
-  bodylist.planets[2] = Venus;
-  bodylist.planets[3] = Earth;
-  bodylist.planets[4] = Moon;
-  bodylist.planets[5] = Mars;
+  bodylist->size = 6;
+  bodylist->planets[0] = Sol;
+  bodylist->planets[1] = Mercury;
+  bodylist->planets[2] = Venus;
+  bodylist->planets[3] = Earth;
+  bodylist->planets[4] = Moon;
+  bodylist->planets[5] = Mars;
 
   Mesh sphere = new_Mesh();
 

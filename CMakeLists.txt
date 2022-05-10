@@ -59,6 +59,8 @@ add_library(modules SHARED ${CMAKE_SOURCE_DIR}/GHEnvironment/GH_TestFile.c
 
 set(LIBS opengl32)
 
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup")
+
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
