@@ -67,10 +67,19 @@ vec4 addVec3ByVec4(vec3 vec3A, vec4 vec4B);
 vec3 addVec3ByFloat(vec3 vec3A, float value);
 
 vec3 subtractVec3ByVec3(vec3 vec3A, vec3 vec3B);
+vec3 subtractVec3ByFloat(vec3 vec3A, float value);
 vec3 subtractVec3ByVec4(vec3 vec3A, vec4 vec4A);
 vec3 subtractVec4ByVec3(vec4 vec4B, vec3 vec3A);
 
 vec3 divideVec3(vec3 vec3A, float divideValue);
+
+dvec3 addDVec3ByDVec3(dvec3 vec3A, dvec3 vec3B);
+
+dvec3 subtractDVec3ByDVec3(dvec3 vec3A, dvec3 vec3B);
+
+dvec3 multiplyDVec3ByDouble(dvec3 vec3A, double value);
+
+dvec3 divideDVec3ByDouble(dvec3 vec3A, double value);
 
 void ResetVec3(vec3* vec3A);
 
@@ -86,6 +95,7 @@ vec4 multiplyMat4ByVec4(struct mat4x4 mat4A, vec4 vec4A);
 
 vec3 vec4ToVec3(vec4 vec4A);
 vec4 vec3ToVec4(vec3 vec3A);
+vec3 dvec3ToVec3(dvec3 vec3A);
 
 struct mat4x4 multiplyMat4ByMat4(struct mat4x4 mat4A, struct mat4x4 mat4B);
 
@@ -112,12 +122,12 @@ double calcArrayByDoubleDot(int g[], double x, double y);
 
 int calcFastfloor(double x);
 
-vec3 calcDistanceVec3(vec3 vec3A, vec3 vec3B);
+dvec3 calcDistanceDVec3(dvec3 vec3A, dvec3 vec3B);
 
-float calcDistanceSum(vec3 vec3A, vec3 vec3B);
+double calcDistanceSum(dvec3 vec3A, dvec3 vec3B);
 
-vec3 calcAccelerationVec3(vec3 vec3A, body target);
+dvec3 calcAccelerationVec3(dvec3 vec3A, body target);
 
-vec3 calcAccelLoop(vec3 origin, struct bodies bodylist, unsigned int bid);
+dvec3 calcAccelLoop(dvec3 origin, struct bodies bodylist, unsigned int bid);
 
 #endif
