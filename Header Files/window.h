@@ -27,11 +27,18 @@ typedef struct SetEntryPoint
   int (*EntryPoint)();
 } SetEntryPoint;
 
+typedef struct ENTRYPOINT_INPUT
+{
+    struct bodies bodylist;
+    volatile struct bodies* shared_mem;
+    LPCRITICAL_SECTION* crit_section;
+} ENTRYPOINT_INPUT;
+
 LRESULT CALLBACK WndProc(HWND hwnd,
                          unsigned int message,
                          WPARAM wParam, LPARAM lParam);
 
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow, struct bodies *shared_mem);
+int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow);
 
 void GH_InitWindow(int (*EntryPoint)());
 
