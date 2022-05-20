@@ -4,6 +4,7 @@
 
 #include <inttypes.h>
 
+/*
 void LoadPlanetData()
 {
   Mesh sphere = new_Mesh();
@@ -17,7 +18,7 @@ void LoadPlanetData()
 void LoadPlanetProperties()
 {
   body Sol = { 0 };
-  Sol.bID = 1;
+  Sol.bid = 1;
   Sol.radius = 696342000;
   Sol.mass = 1988500e+24;
   Sol.position = new_dvec3(-1.068108951496322e+09,
@@ -95,7 +96,7 @@ struct bodies* GetBodyList()
 {
   return(&bodylist);
 }
-
+*/
 void setup_world()
 {
   LARGE_INTEGER diff;
@@ -118,7 +119,7 @@ void setup_world()
     }
   }
 
-  LoadPlanetData(GetBodyList());
+  //LoadPlanetData(GetBodyList());
 
   QueryPerformanceCounter(&timePrev);
 

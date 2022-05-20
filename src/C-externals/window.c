@@ -1,7 +1,8 @@
 #include "window.h"
 #include "parser.h"
 
-volatile struct bodies *bodylist_mem;
+
+volatile struct blist *bodylist_mem;
 LPCRITICAL_SECTION crit_section;
 
 
@@ -386,7 +387,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
   return 0;
 }
 
-void GH_InitWindow(int (*EntryPoint)())
+void GH_InitWindow(int (*EntryPoint)(), char* path)
 {
 
   
@@ -398,8 +399,9 @@ void GH_InitWindow(int (*EntryPoint)())
     Write_CommandLineHelpMenu();
     ComponentsThreads = new_dynHandleArray();
      
-    LoadPlanetProperties();
-    struct bodies bodylist = *GetBodyList();
+     struct blist bodylist = get_body_from_json(path);
+    //LoadPlanetProperties();
+    //struct bodies bodylist = *GetBodyList();
     
 
     if (!InitializeCriticalSectionAndSpinCount(&crit_section, 0x80000400))

@@ -8,6 +8,11 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_options("/Z7")
+add_link_options("/DEFAULTLIB:ws2_32.lib")
+add_link_options("/DEFAULTLIB:Bcrypt.lib")
+add_link_options("/DEFAULTLIB:userenv.lib")
+
+
 
 file(GLOB_RECURSE SOURCE_FILES
     ${CMAKE_SOURCE_DIR}/src/*.c
@@ -52,6 +57,11 @@ include(GenerateExportHeader)
 
 set(DLLS_PATH ${CMAKE_SOURCE_DIR}/Dependencies/dlls)
 
+file(COPY parse_json.lib DESTINATION ${CMAKE_SOURCE_DIR}/Debug/)
+file(COPY Sol_2_body.json DESTINATION ${CMAKE_SOURCE_DIR}/Debug/)
+file(COPY Sol_6_body.json DESTINATION ${CMAKE_SOURCE_DIR}/Debug/)
+file(COPY Sol_Full.json DESTINATION ${CMAKE_SOURCE_DIR}/Debug/)
+
 file(GLOB EXTERNALDLLS
     ${CMAKE_SOURCE_DIR}/GHEnvironment/GH_*.c
     ${CMAKE_SOURCE_DIR}/GHEnvironment/GH_.*h)
@@ -59,8 +69,15 @@ file(GLOB EXTERNALDLLS
 add_library(modules SHARED ${CMAKE_SOURCE_DIR}/GHEnvironment/GH_TestFile.c
                            ${CMAKE_SOURCE_DIR}/GHEnvironment/GH_TestFile.h)
 
-set(LIBS opengl32)
+add_library(parse_json parse_json.lib)
+set_target_properties(parse_json PROPERTIES LINKER_LANGUAGE C)
+
+
+
+set(LIBS opengl32 parse_json)
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${LIBS})
+
+
