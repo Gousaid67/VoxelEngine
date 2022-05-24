@@ -5,7 +5,11 @@ void UpdateEntities(LPCRITICAL_SECTION *critsection, struct blist *shared_mem, s
 
   size_t size;
 
-  EnterCriticalSection(critsection);
+  BOOL res = TryEnterCriticalSection(crit_section);
+  if(res == 0)
+  {
+    return;
+  }
   size = shared_mem->size;
   memcpy(local_list->planets, shared_mem->planets, sizeof(struct body) * size);
   LeaveCriticalSection(&critsection);
