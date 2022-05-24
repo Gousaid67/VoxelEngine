@@ -5,7 +5,7 @@ void UpdateEntities(LPCRITICAL_SECTION *critsection, struct blist *shared_mem, s
 
   size_t size;
 
-  BOOL res = TryEnterCriticalSection(crit_section);
+  BOOL res = TryEnterCriticalSection(critsection);
   if(res == 0)
   {
     return;
