@@ -20,9 +20,7 @@ int physics_thread(struct ENTRYPOINT_INPUT* input)
         continue;
     }
     memcpy(shared_mem->planets, bodylist.planets, sizeof(struct body) * bodylist.size);
-    
-    
-    
+
     LeaveCriticalSection(crit_section);
   }
 

@@ -23,6 +23,8 @@
 HGLRC hRC; // Permanent Rendering Context
 HDC hDC; // Private GDI Device Context
 
+
+
 typedef struct SetEntryPoint
 {
   int (*EntryPoint)();

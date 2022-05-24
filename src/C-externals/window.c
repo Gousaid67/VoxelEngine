@@ -1,9 +1,8 @@
 #include "window.h"
 #include "parser.h"
 
-
-volatile struct blist *t_bodylist_mem;
-struct blist *local_mem;
+volatile struct blist* t_bodylist_mem;
+struct blist* local_mem;
 LPCRITICAL_SECTION CRIT_SECTION;
 
 
@@ -116,6 +115,7 @@ LRESULT CALLBACK WndProc(HWND hwnd,
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
+  LPCRITICAL_SECTION critical_sec = &(LPCRITICAL_SECTION)hInstance;
   configurations.WIDTH = 1920.0f;
   configurations.HEIGHT = 1080.0f;
 
@@ -332,7 +332,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
   QueryPerformanceFrequency(&Frequency);
 
-  setup_world();
+  setup_world(local_mem);
   /*
   CreateAndLoadCollider(new_vec3(16, 0, 0), new_vec3(16, 16, 0),
                         new_vec3(0, 0, 0), new_vec3(0, 16, 0),
@@ -369,7 +369,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     QueryPerformanceCounter(&timeNow);
 
-    Update(local_mem, &CRIT_SECTION);
+    Update(local_mem, t_bodylist_mem , &CRIT_SECTION);
     Render();
 
     SwapBuffers(hDC);
@@ -404,7 +404,7 @@ void GH_InitWindow(int (*EntryPoint)(), char* path)
      
      struct blist bodylist = get_body_from_json(path);
 
-     local_mem = &bodylist;
+
     //LoadPlanetProperties();
     //struct bodies bodylist = *GetBodyList();
     
@@ -414,6 +414,12 @@ void GH_InitWindow(int (*EntryPoint)(), char* path)
         printf("Critical section did not initialize!");
         printf(GetLastError());
     }
+
+    local_mem = malloc(sizeof(blist));
+    local_mem->planets = malloc(sizeof(body) * bodylist.size);
+    strncpy(&local_mem->name[0], &bodylist.name[0], 32);
+    memcpy(local_mem->planets, bodylist.planets, sizeof(body) * bodylist.size);
+    local_mem->size = bodylist.size;
 
     t_bodylist_mem = malloc(sizeof(bodylist));
     if (t_bodylist_mem == NULL)
@@ -450,7 +456,7 @@ void GH_InitWindow(int (*EntryPoint)(), char* path)
 
     HANDLE ENTRYPOINT = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EntryPoint, input, 0, NULL);
 
-    dynHandleArray_AddBack(&ComponentsThreads, CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)wWinMain, NULL, 0, NULL));
+    dynHandleArray_AddBack(&ComponentsThreads, CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)wWinMain, &CRIT_SECTION, 0, NULL));
     dynHandleArray_AddBack(&ComponentsThreads, ENTRYPOINT);
 
     WriteEventSignal = CreateEvent(
