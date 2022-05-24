@@ -3,7 +3,7 @@
 
 #include "entityManager.component.h"
 
-void UpdateEntities(LONGLONG DeltaTime);
+void UpdateEntities(LONGLONG DeltaTime, LPCRITICAL_SECTION *crit_section, struct blist *local_list);
 
 void RenderEntities(LONGLONG DeltaTime);
 

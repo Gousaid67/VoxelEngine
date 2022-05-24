@@ -9,10 +9,12 @@
 
 #include "parser.h"
 
+void LoadPlanetData(struct blist bodylist);
+
 /*
 struct blist bodylist;
 
-void LoadPlanetData();
+
 void LoadPlanetProperties();
 
 struct body* GetBodyList();

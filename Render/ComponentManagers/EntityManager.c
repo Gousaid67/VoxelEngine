@@ -1,10 +1,30 @@
 #include "EntityManager.h"
 
-void UpdateEntities(LONGLONG DeltaTime)
+void UpdateEntities(LONGLONG DeltaTime, LPCRITICAL_SECTION *crit_section, struct blist *shared_mem, struct blist *local_list)
 {
+
+  BOOL res = TryEnterCriticalSection(crit_section);
+  if(res == 0)
+  {
+    return;
+  }
+  size_t size = shared_mem->size;
+  memcpy(local_list->planets, shared_mem->planets, sizeof(struct body) * size);
+  LeaveCriticalSection(crit_section);
+  struct body farthest_object = local_list->planets[size - 1];
+
+
+  double kepler_scalar = 1000 / calcDVec3length(farthest_object.position);
+
+
   for(int i = 0; i < entityStack_Count(Entities); i++)
   {
+    Entities->entities[i].position = dvec3ToVec3(multiplyDVec3ByDouble(local_list->planets[i].position, kepler_scalar));
+    Entities->entities[i].velocity = dvec3ToVec3(multiplyDVec3ByDouble(local_list->planets[i].velocity, kepler_scalar));
+
   }
+
+
 }
 
 void RenderEntities(LONGLONG DeltaTime)

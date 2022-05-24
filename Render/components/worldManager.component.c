@@ -4,17 +4,17 @@
 
 #include <inttypes.h>
 
-/*
-void LoadPlanetData()
+
+void LoadPlanetData(struct blist bodylist)
 {
   Mesh sphere = new_Mesh();
   for(unsigned int PlanetIterator = 0; PlanetIterator < bodylist.size; PlanetIterator++)
   {
-    sphere = fast_sphere((float)bodylist.planets[PlanetIterator].radius, 100, 100);
+    sphere = fast_sphere((float)bodylist.planets[PlanetIterator].radius, 10, 10);
     loadToVAO(sphere, dvec3ToVec3(bodylist.planets[PlanetIterator].position));
   }
 }
-
+/*
 void LoadPlanetProperties()
 {
   body Sol = { 0 };
@@ -97,7 +97,7 @@ struct bodies* GetBodyList()
   return(&bodylist);
 }
 */
-void setup_world()
+void setup_world(struct blist bodylist)
 {
   LARGE_INTEGER diff;
   LARGE_INTEGER timeNow, timePrev;
@@ -119,7 +119,7 @@ void setup_world()
     }
   }
 
-  //LoadPlanetData(GetBodyList());
+  LoadPlanetData(bodylist);
 
   QueryPerformanceCounter(&timePrev);
 

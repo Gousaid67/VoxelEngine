@@ -33,7 +33,7 @@ void glClearScene()
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 }
 
-void Update()
+void Update(struct blist *local_list, LPCRITICAL_SECTION *crit_section)
 {
   /*
   for(int UpdateFuncs_iterator = 0; UpdateFuncs_iterator < UpdateFuncs->size; UpdateFuncs_iterator++)
@@ -41,7 +41,7 @@ void Update()
   */
 
  
-  UpdateEntities(DeltaTime.QuadPart);
+  UpdateEntities(DeltaTime.QuadPart, crit_section, local_list);
   UpdateCamera(DeltaTime.QuadPart);
   UpdateControls(DeltaTime.QuadPart);
 }

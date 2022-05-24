@@ -2,8 +2,9 @@
 #include "parser.h"
 
 
-volatile struct blist *bodylist_mem;
-LPCRITICAL_SECTION crit_section;
+volatile struct blist *t_bodylist_mem;
+struct blist *local_mem;
+LPCRITICAL_SECTION CRIT_SECTION;
 
 
 
@@ -117,6 +118,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
   configurations.WIDTH = 1920.0f;
   configurations.HEIGHT = 1080.0f;
+
+  
 
   char line[256];
   FILE* CameraSettingsFile = fopen("../Resource Files/configurations/CameraSettings.cfg", "r");
@@ -366,7 +369,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
     QueryPerformanceCounter(&timeNow);
 
-    Update();
+    Update(local_mem, &CRIT_SECTION);
     Render();
 
     SwapBuffers(hDC);
@@ -400,35 +403,49 @@ void GH_InitWindow(int (*EntryPoint)(), char* path)
     ComponentsThreads = new_dynHandleArray();
      
      struct blist bodylist = get_body_from_json(path);
+
+     local_mem = &bodylist;
     //LoadPlanetProperties();
     //struct bodies bodylist = *GetBodyList();
     
 
-    if (!InitializeCriticalSectionAndSpinCount(&crit_section, 0x80000400))
+    if (!InitializeCriticalSectionAndSpinCount(&CRIT_SECTION, 0x80000400))
     {
         printf("Critical section did not initialize!");
         printf(GetLastError());
     }
 
-    bodylist_mem = malloc(sizeof(bodylist));
-
-    if (bodylist_mem == NULL)
+    t_bodylist_mem = malloc(sizeof(bodylist));
+    if (t_bodylist_mem == NULL)
     {
         printf("Malloc for shared memory failed!");
-        exit(1);
+        exit(-1);
     }
-    memcpy(bodylist_mem, &bodylist, sizeof(bodylist));
+
+    strncpy(&t_bodylist_mem->name[0], &bodylist.name[0], 32);
+    t_bodylist_mem->size = bodylist.size;
+
+
+    t_bodylist_mem->planets = malloc(sizeof(struct body) * bodylist.size);
+    if(t_bodylist_mem->planets == NULL)
+    {
+      printf("Malloc for planet list failed!");
+      exit(-2);
+    }
+
+    
+    memcpy(t_bodylist_mem->planets, bodylist.planets, sizeof(struct body) * bodylist.size);
 
     struct ENTRYPOINT_INPUT* input = malloc(sizeof(struct ENTRYPOINT_INPUT));
     if (input == NULL)
     {
         printf("Input malloc failed!");
-        exit(1);
+        exit(-1);
     }
 
     input->bodylist = bodylist;
-    input->shared_mem = bodylist_mem;
-    input->crit_section = &crit_section;
+    input->shared_mem = t_bodylist_mem;
+    input->CRIT_SECTION = &CRIT_SECTION;
  
 
     HANDLE ENTRYPOINT = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)EntryPoint, input, 0, NULL);
@@ -447,5 +464,9 @@ void GH_InitWindow(int (*EntryPoint)(), char* path)
 
     SetEvent(WriteEventSignal);
     WaitForMultipleObjects(ComponentsThreads->size, ComponentsThreads->handles, TRUE, INFINITE);
+    free(t_bodylist_mem->planets);
+    free(t_bodylist_mem);
+    free(CRIT_SECTION);
+
   }
 }
